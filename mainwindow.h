@@ -26,6 +26,9 @@ private:
     void setSpeed(int speed) { mSpeed = speed; updateLabels(); }
     void resetValues();
 
+    void play();
+    void playSelection();
+
     int mVolume = 100;
     int mPitch = 50;
     int mSpeed = 200;

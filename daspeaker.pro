@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    daspeaker_def.h \
     mainwindow.h
 
 FORMS += \
