@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QtTextToSpeech/QTextToSpeech>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -26,11 +28,16 @@ private:
     void setSpeed(int speed) { mSpeed = speed; updateLabels(); }
     void resetValues();
 
+    void updatePlayButtons();
     void play();
     void playSelection();
 
     int mVolume = 100;
     int mPitch = 50;
     int mSpeed = 200;
+
+    QTextToSpeech* mSpeaker;
+    QVector<QLocale> mLanguages;
+    QVector<QVoice> mVoices;
 };
 #endif // MAINWINDOW_H

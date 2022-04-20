@@ -25,7 +25,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPlainTextEdit" name="pteTextHolder"/>
+       <widget class="QPlainTextEdit" name="plainTextHolder"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">

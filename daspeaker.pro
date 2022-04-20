@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui texttospeech
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,16 +13,18 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    daspeaker_def.h \
     mainwindow.h
 
 FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    daspeaker_da_DK.ts
+    lang\daspeaker_da_DK.ts
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    lang/daspeaker_da_DK.ts

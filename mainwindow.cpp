@@ -4,8 +4,6 @@
 #include <QDebug>
 #include <QProcess>
 
-#include "daspeaker_def.h"
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -21,7 +19,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::initUi()
 {
-    updateLabels();
+    setWindowTitle(tr("daspeaker"));
+
+    // engine
+    mSpeaker = new QTextToSpeech(this);
+    const auto engines = mSpeaker->availableEngines();
+    mSpeaker->say(tr("Hello world. Here we go again!"));
+
+    // languages
+    mLanguages = mSpeaker->availableLocales();
+    mSpeaker->setLocale(QLocale::Danish);
+
+    // Voices
+//    mVoices = mSpeaker->availableVoices();
+
 
     connect(ui->btnClose, &QPushButton::clicked, this, &MainWindow::close);
     connect(ui->btnResetValues, &QPushButton::clicked, this, &MainWindow::resetValues);
@@ -29,7 +40,12 @@ void MainWindow::initUi()
     connect(ui->sliderPitch, &QSlider::valueChanged, this, &MainWindow::setPitch);
     connect(ui->sliderSpeed, &QSlider::valueChanged, this, &MainWindow::setSpeed);
 
+    connect(ui->plainTextHolder, &QPlainTextEdit::textChanged, this, &MainWindow::updatePlayButtons);
+
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::play);
+
+    updateLabels();
+    updatePlayButtons();
 }
 
 void MainWindow::updateLabels()
@@ -50,19 +66,23 @@ void MainWindow::resetValues()
     updateLabels();
 }
 
+void MainWindow::updatePlayButtons()
+{
+    if (ui->plainTextHolder->toPlainText().length() < 1)
+    {
+        ui->btnPlay->setEnabled(false);
+        ui->btnPlaySelection->setEnabled(false);
+    }
+    else
+    {
+        ui->btnPlay->setEnabled(true);
+        ui->btnPlaySelection->setEnabled(true);
+    }
+}
+
 void MainWindow::play()
 {
-    QString progString = "ESPEAK ";
-    progString += " -vda";
-    progString += " -a" + QString::number(ui->sliderVolume->value());
-    progString += " -p" + QString::number(ui->sliderPitch->value());
-    progString += " -s" + QString::number(ui->sliderSpeed->value());
-    QStringList list;
-    list.append(" en kop kaffe, tak.");
-    qDebug() << progString;
-//    QProcess::execute(progString, list);
-    QProcess::execute(QString("ESPEAK %1 %2 %3 %4").arg(" -vda ").arg("QString::number(ui->sliderVolume->value()")
-                      .arg("QString::number(ui->sliderPitch->value()").arg("QString::number(ui->sliderSpeed->value()"), list);
+    mSpeaker->say(ui->plainTextHolder->toPlainText());
 }
 
 void MainWindow::playSelection()
