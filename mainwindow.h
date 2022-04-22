@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGuiApplication>
 
 #include <QtTextToSpeech/QTextToSpeech>
 
@@ -23,21 +24,23 @@ private:
     void initUi();
     void setLanguage(int lang);
     void updateLabels();
+    void updateClipboard();
 
     void setVolume(int volume);
-    void setPitch(int pitch);
     void setSpeed(int speed);
     void resetValues();
 
-    void updatePlayButtons();
     void play();
-    void playSelection();
+    void pause();
+    void resume();
+    void stop();
 
     double mVolume = 0.75;
-    double mPitch = 0.0;
     double mSpeed = 0.0;
 
-    QString espeak = "espeak";
+    QClipboard* mBoard = QGuiApplication::clipboard();
+    QString mSelection = "";
+
     QTextToSpeech* mSpeaker;
     QVector<QLocale> mLanguages;
     QVector<QVoice> mVoices;

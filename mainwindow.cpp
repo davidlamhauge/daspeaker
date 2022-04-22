@@ -3,12 +3,14 @@
 
 #include <QDebug>
 #include <QProcess>
+#include <QClipboard>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     initUi();
 }
 
@@ -32,20 +34,18 @@ void MainWindow::initUi()
     // Voices
     mVoices = mSpeaker->availableVoices();
 
-
     connect(ui->btnClose, &QPushButton::clicked, this, &MainWindow::close);
     connect(ui->btnResetValues, &QPushButton::clicked, this, &MainWindow::resetValues);
     connect(ui->sliderVolume, &QSlider::valueChanged, this, &MainWindow::setVolume);
-    connect(ui->sliderPitch, &QSlider::valueChanged, this, &MainWindow::setPitch);
     connect(ui->sliderSpeed, &QSlider::valueChanged, this, &MainWindow::setSpeed);
 
-    connect(ui->plainTextHolder, &QPlainTextEdit::textChanged, this, &MainWindow::updatePlayButtons);
-
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::play);
+    connect(ui->btnPause, &QPushButton::clicked, this, &MainWindow::pause);
+    connect(ui->btnResume, &QPushButton::clicked, this, &MainWindow::resume);
+    connect(ui->btnStop, &QPushButton::clicked, this, &MainWindow::stop);
     connect(ui->cbLanguages, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setLanguage);
 
     updateLabels();
-    updatePlayButtons();
 }
 
 void MainWindow::setLanguage(int lang)
@@ -79,8 +79,19 @@ void MainWindow::setLanguage(int lang)
 void MainWindow::updateLabels()
 {
     ui->labActualVolume->setText(QString::number(mVolume));
-    ui->labActualPitch->setText(QString::number(mPitch));
     ui->labActualSpeed->setText(QString::number(mSpeed));
+}
+
+void MainWindow::updateClipboard()
+{
+    if (QApplication::clipboard()->text().length() > 0)
+    {
+        mSelection = QApplication::clipboard()->text();
+    }
+    else
+    {
+        mSelection = mBoard->text();
+    }
 }
 
 void MainWindow::setVolume(int volume)
@@ -88,13 +99,6 @@ void MainWindow::setVolume(int volume)
     mVolume = volume / 100.0;
     ui->labActualVolume->setText(QString::number(mVolume));
     mSpeaker->setVolume(mVolume);
-}
-
-void MainWindow::setPitch(int pitch)
-{
-    mPitch = pitch / 100.0;
-    ui->labActualPitch->setText(QString::number(mPitch));
-    mSpeaker->setPitch(mPitch);
 }
 
 void MainWindow::setSpeed(int speed)
@@ -106,36 +110,31 @@ void MainWindow::setSpeed(int speed)
 
 void MainWindow::resetValues()
 {
-    setVolume(100);
-    ui->sliderVolume->setValue(mVolume);
-    setPitch(50);
-    ui->sliderPitch->setValue(mPitch);
-    setSpeed(200);
-    ui->sliderSpeed->setValue(mSpeed);
+    setVolume(80);
+    ui->sliderVolume->setValue(static_cast<int>(mVolume * 100));
+    setSpeed(-70);
+    ui->sliderSpeed->setValue(static_cast<int>(mSpeed * 100));
     updateLabels();
-}
-
-void MainWindow::updatePlayButtons()
-{
-    if (ui->plainTextHolder->toPlainText().length() < 1)
-    {
-        ui->btnPlay->setEnabled(false);
-        ui->btnPlaySelection->setEnabled(false);
-    }
-    else
-    {
-        ui->btnPlay->setEnabled(true);
-        ui->btnPlaySelection->setEnabled(true);
-    }
 }
 
 void MainWindow::play()
 {
-    mSpeaker->say(ui->plainTextHolder->toPlainText());
+    updateClipboard();
+    if (mSelection.length() > 0)
+        mSpeaker->say(mSelection);
 }
 
-void MainWindow::playSelection()
+void MainWindow::pause()
 {
-
+    mSpeaker->pause();
 }
 
+void MainWindow::resume()
+{
+    mSpeaker->resume();
+}
+
+void MainWindow::stop()
+{
+    mSpeaker->stop();
+}
