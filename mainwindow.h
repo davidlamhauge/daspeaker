@@ -21,21 +21,23 @@ private:
     Ui::MainWindow *ui;
 
     void initUi();
+    void setLanguage(int lang);
     void updateLabels();
 
-    void setVolume(int volume) { mVolume = volume; updateLabels(); }
-    void setPitch(int pitch) { mPitch = pitch; updateLabels(); }
-    void setSpeed(int speed) { mSpeed = speed; updateLabels(); }
+    void setVolume(int volume);
+    void setPitch(int pitch);
+    void setSpeed(int speed);
     void resetValues();
 
     void updatePlayButtons();
     void play();
     void playSelection();
 
-    int mVolume = 100;
-    int mPitch = 50;
-    int mSpeed = 200;
+    double mVolume = 0.75;
+    double mPitch = 0.0;
+    double mSpeed = 0.0;
 
+    QString espeak = "espeak";
     QTextToSpeech* mSpeaker;
     QVector<QLocale> mLanguages;
     QVector<QVoice> mVoices;

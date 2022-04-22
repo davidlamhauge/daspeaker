@@ -24,14 +24,13 @@ void MainWindow::initUi()
     // engine
     mSpeaker = new QTextToSpeech(this);
     const auto engines = mSpeaker->availableEngines();
-    mSpeaker->say(tr("Hello world. Here we go again!"));
 
     // languages
     mLanguages = mSpeaker->availableLocales();
     mSpeaker->setLocale(QLocale::Danish);
 
     // Voices
-//    mVoices = mSpeaker->availableVoices();
+    mVoices = mSpeaker->availableVoices();
 
 
     connect(ui->btnClose, &QPushButton::clicked, this, &MainWindow::close);
@@ -43,9 +42,38 @@ void MainWindow::initUi()
     connect(ui->plainTextHolder, &QPlainTextEdit::textChanged, this, &MainWindow::updatePlayButtons);
 
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::play);
+    connect(ui->cbLanguages, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setLanguage);
 
     updateLabels();
     updatePlayButtons();
+}
+
+void MainWindow::setLanguage(int lang)
+{
+    if (lang < 0)
+        return;
+
+    switch (lang)
+    {
+    case 0:
+        mSpeaker->setLocale(QLocale::Danish);
+        break;
+    case 1:
+        mSpeaker->setLocale(QLocale::English);
+        break;
+    case 2:
+        mSpeaker->setLocale(QLocale::German);
+        break;
+    case 3:
+        mSpeaker->setLocale(QLocale::French);
+        break;
+    case 4:
+        mSpeaker->setLocale(QLocale::Spanish);
+        break;
+    default:
+        mSpeaker->setLocale(QLocale::Danish);
+        break;
+    }
 }
 
 void MainWindow::updateLabels()
@@ -53,6 +81,27 @@ void MainWindow::updateLabels()
     ui->labActualVolume->setText(QString::number(mVolume));
     ui->labActualPitch->setText(QString::number(mPitch));
     ui->labActualSpeed->setText(QString::number(mSpeed));
+}
+
+void MainWindow::setVolume(int volume)
+{
+    mVolume = volume / 100.0;
+    ui->labActualVolume->setText(QString::number(mVolume));
+    mSpeaker->setVolume(mVolume);
+}
+
+void MainWindow::setPitch(int pitch)
+{
+    mPitch = pitch / 100.0;
+    ui->labActualPitch->setText(QString::number(mPitch));
+    mSpeaker->setPitch(mPitch);
+}
+
+void MainWindow::setSpeed(int speed)
+{
+    mSpeed = speed / 100.0;
+    ui->labActualSpeed->setText(QString::number(mSpeed));
+    mSpeaker->setRate(mSpeed);
 }
 
 void MainWindow::resetValues()
