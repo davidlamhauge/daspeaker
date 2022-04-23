@@ -46,6 +46,8 @@ void MainWindow::initUi()
     connect(ui->cbLanguages, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setLanguage);
 
     updateLabels();
+
+    connect(QApplication::clipboard(), &QClipboard::selectionChanged, this, &MainWindow::updateClipboard);
 }
 
 void MainWindow::setLanguage(int lang)
