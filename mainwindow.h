@@ -22,10 +22,11 @@ private:
     void initUi();
     void setLanguage(int lang);
     void updateLabels();
-    void updateClipboard();
+    void updateSelected();
 
     void setVolume(int volume);
     void setSpeed(int speed);
+    void setPitch(int pitch);
     void resetValues();
 
     void play();
@@ -34,10 +35,12 @@ private:
     QString mSetVolume = "-a100";
     int mSpeed = 180;
     QString mSetSpeed = "-s175";
+    int mPitch = 50;
+    QString mSetPitch = "-p50";
 
     QClipboard* mBoard = QGuiApplication::clipboard();
-    QString mSelection = "";
 
+    QString mSelection = "";
     QString mLang = "-vda";     // Danish is default
 
 };
