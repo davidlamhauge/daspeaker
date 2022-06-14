@@ -41,6 +41,8 @@ Pencil2D.app
 
 *.autosave
 build-pencil-Desktop-Debug/*
+.qtc_clangd
+eSpeak/*
 
 # Mac stuff
 

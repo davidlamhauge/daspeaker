@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QGuiApplication>
 
-#include <QtTextToSpeech/QTextToSpeech>
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -31,18 +29,16 @@ private:
     void resetValues();
 
     void play();
-    void pause();
-    void resume();
-    void stop();
 
-    double mVolume = 0.75;
-    double mSpeed = 0.0;
+    int mVolume = 100;
+    QString mSetVolume = "-a100";
+    int mSpeed = 180;
+    QString mSetSpeed = "-s175";
 
     QClipboard* mBoard = QGuiApplication::clipboard();
     QString mSelection = "";
 
-    QTextToSpeech* mSpeaker;
-    QVector<QLocale> mLanguages;
-    QVector<QVoice> mVoices;
+    QString mLang = "-vda";     // Danish is default
+
 };
 #endif // MAINWINDOW_H

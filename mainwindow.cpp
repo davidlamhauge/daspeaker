@@ -23,26 +23,12 @@ void MainWindow::initUi()
 {
     setWindowTitle(tr("daspeaker"));
 
-    // engine
-    mSpeaker = new QTextToSpeech(this);
-    const auto engines = mSpeaker->availableEngines();
-
-    // languages
-    mLanguages = mSpeaker->availableLocales();
-    mSpeaker->setLocale(QLocale::Danish);
-
-    // Voices
-    mVoices = mSpeaker->availableVoices();
-
     connect(ui->btnClose, &QPushButton::clicked, this, &MainWindow::close);
     connect(ui->btnResetValues, &QPushButton::clicked, this, &MainWindow::resetValues);
     connect(ui->sliderVolume, &QSlider::valueChanged, this, &MainWindow::setVolume);
     connect(ui->sliderSpeed, &QSlider::valueChanged, this, &MainWindow::setSpeed);
 
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::play);
-    connect(ui->btnPause, &QPushButton::clicked, this, &MainWindow::pause);
-    connect(ui->btnResume, &QPushButton::clicked, this, &MainWindow::resume);
-    connect(ui->btnStop, &QPushButton::clicked, this, &MainWindow::stop);
     connect(ui->cbLanguages, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setLanguage);
 
     updateLabels();
@@ -58,22 +44,22 @@ void MainWindow::setLanguage(int lang)
     switch (lang)
     {
     case 0:
-        mSpeaker->setLocale(QLocale::Danish);
+        mLang = "-vda";
         break;
     case 1:
-        mSpeaker->setLocale(QLocale::English);
+        mLang = "-ven";
         break;
     case 2:
-        mSpeaker->setLocale(QLocale::German);
+        mLang = "-vde";
         break;
     case 3:
-        mSpeaker->setLocale(QLocale::French);
+        mLang = "-vfr";
         break;
     case 4:
-        mSpeaker->setLocale(QLocale::Spanish);
+        mLang = "-ves";
         break;
     default:
-        mSpeaker->setLocale(QLocale::Danish);
+        mLang = "-vda";
         break;
     }
 }
@@ -98,45 +84,33 @@ void MainWindow::updateClipboard()
 
 void MainWindow::setVolume(int volume)
 {
-    mVolume = volume / 100.0;
+    mVolume = volume;
+    mSetVolume = "-a" + QString::number(volume);
     ui->labActualVolume->setText(QString::number(mVolume));
-    mSpeaker->setVolume(mVolume);
 }
 
 void MainWindow::setSpeed(int speed)
 {
-    mSpeed = speed / 100.0;
+    mSpeed = speed;
+    mSetSpeed = "-s" + QString::number(speed);
     ui->labActualSpeed->setText(QString::number(mSpeed));
-    mSpeaker->setRate(mSpeed);
 }
 
 void MainWindow::resetValues()
 {
-    setVolume(80);
-    ui->sliderVolume->setValue(static_cast<int>(mVolume * 100));
-    setSpeed(-70);
-    ui->sliderSpeed->setValue(static_cast<int>(mSpeed * 100));
+    setVolume(100);
+    ui->sliderVolume->setValue(100);
+    setSpeed(180);
+    ui->sliderSpeed->setValue(180);
     updateLabels();
 }
 
 void MainWindow::play()
 {
     updateClipboard();
-    if (mSelection.length() > 0)
-        mSpeaker->say(mSelection);
-}
-
-void MainWindow::pause()
-{
-    mSpeaker->pause();
-}
-
-void MainWindow::resume()
-{
-    mSpeaker->resume();
-}
-
-void MainWindow::stop()
-{
-    mSpeaker->stop();
+    QProcess* proc = new QProcess();
+    QString path = QGuiApplication::applicationDirPath() + "/eSpeak/command_line/espeak.exe";
+    QStringList args;
+    args << mLang << mSetSpeed << mSetVolume << mSelection;
+    proc->start(path , args);
 }
