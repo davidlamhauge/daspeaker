@@ -33,8 +33,8 @@ private:
 
     int mVolume = 100;
     QString mSetVolume = "-a100";
-    int mSpeed = 180;
-    QString mSetSpeed = "-s175";
+    int mSpeed = 160;
+    QString mSetSpeed = "-s160";
     int mPitch = 50;
     QString mSetPitch = "-p50";
 
@@ -42,6 +42,7 @@ private:
 
     QString mSelection = "";
     QString mLang = "-vda";     // Danish is default
+    int mLangIndex = 0;
 
 };
 #endif // MAINWINDOW_H

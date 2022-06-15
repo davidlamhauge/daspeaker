@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QProcess>
 #include <QClipboard>
+#include <QScreen>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,10 +14,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     initUi();
+
+    // position where we left it
+    QSize scr = QGuiApplication::primaryScreen()->availableSize();
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    resize(settings.value("winSize", QSize(400, 320)).toSize());
+    move(settings.value("winPos", QPoint(scr.width()/2 - 200, scr.height()/2 - 160)).toPoint());
+
 }
 
 MainWindow::~MainWindow()
 {
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    settings.setValue("winSize", size());
+    settings.setValue("winPos", pos());
+
     delete ui;
 }
 
@@ -31,6 +44,20 @@ void MainWindow::initUi()
 
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::play);
     connect(ui->cbLanguages, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::setLanguage);
+
+    QSettings settings("TeamLamhauge", "daSpeaker");
+
+    mLang = settings.value("lang", "-vda").toString();
+    mLangIndex = settings.value("langIndex", 0).toInt();
+    ui->cbLanguages->setCurrentIndex(mLangIndex);
+    setLanguage(mLangIndex);
+
+    mVolume = settings.value("volume", 100).toInt();
+    setVolume(mVolume);
+    mSpeed = settings.value("speed", 160).toInt();
+    setSpeed(mSpeed);
+    mPitch = settings.value("pitch", 50).toInt();
+    setPitch(mPitch);
 
     updateLabels();
 
@@ -51,6 +78,9 @@ void MainWindow::setLanguage(int lang)
     case 4: mLang = "-ves"; break;
     default: mLang = "-vda"; break;
     }
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    settings.setValue("lang", mLang);
+    settings.setValue("langIndex", lang);
 }
 
 void MainWindow::updateLabels()
@@ -76,25 +106,35 @@ void MainWindow::setVolume(int volume)
 {
     mVolume = volume;
     mSetVolume = "-a" + QString::number(volume);
+    ui->sliderVolume->setValue(volume);
     ui->labActualVolume->setText(QString::number(mVolume));
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    settings.setValue("volume", mVolume);
 }
 
 void MainWindow::setSpeed(int speed)
 {
     mSpeed = speed;
     mSetSpeed = "-s" + QString::number(speed);
+    ui->sliderSpeed->setValue(speed);
     ui->labActualSpeed->setText(QString::number(mSpeed));
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    settings.setValue("speed", mSpeed);
 }
 
 void MainWindow::setPitch(int pitch)
 {
     mPitch = pitch;
     mSetPitch = "-p" + QString::number(pitch);
+    ui->sliderPitch->setValue(pitch);
     ui->labActualPitch->setText(QString::number(mPitch));
+    QSettings settings("TeamLamhauge", "daSpeaker");
+    settings.setValue("pitch", mPitch);
 }
 
 void MainWindow::resetValues()
 {
+    // includes updating settings
     setVolume(100);
     ui->sliderVolume->setValue(100);
     setSpeed(180);
