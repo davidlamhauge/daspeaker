@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     initUi();
 
+    setWindowTitle("daspeaker - version " APP_VERSION);
+
     // position where we left it
     QSize scr = QGuiApplication::primaryScreen()->availableSize();
     QSettings settings("TeamLamhauge", "daSpeaker");

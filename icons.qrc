@@ -7,5 +7,7 @@
         <file>icons/Flag_FR.png</file>
         <file>icons/Flag_KL.png</file>
         <file>icons/Flag_UK.png</file>
+        <file>icons/daspeaker_icon_30.png</file>
+        <file>icons/daspeaker_icon_300.png</file>
     </qresource>
 </RCC>
