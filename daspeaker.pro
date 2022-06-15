@@ -28,3 +28,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     lang/daspeaker_da_DK.ts
+
+RESOURCES += \
+    icons.qrc

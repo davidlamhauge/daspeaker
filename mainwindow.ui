@@ -160,25 +160,45 @@
          <property name="text">
           <string>Danish</string>
          </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/Flag_DK.png</normaloff>:/icons/Flag_DK.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>English</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/Flag_UK.png</normaloff>:/icons/Flag_UK.png</iconset>
          </property>
         </item>
         <item>
          <property name="text">
           <string>German</string>
          </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/Flag_DE.png</normaloff>:/icons/Flag_DE.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>French</string>
          </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/Flag_FR.png</normaloff>:/icons/Flag_FR.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Spanish</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/Flag_ES.png</normaloff>:/icons/Flag_ES.png</iconset>
          </property>
         </item>
        </widget>
@@ -243,6 +263,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
